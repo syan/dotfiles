@@ -13,3 +13,17 @@ if [ ! -d ~/.vim/bundle/neobundle ] ; then
 	vim -c ":NeoBundleInstall"
 fi
 
+linkfiles=".vimrc .gvimrc"
+linkdirs=".vim"
+for i in $linkfiles ; do
+	if [ ! -f ~/$i ] ; then
+		ln -s ~/dotfiles/files/$i ~/$i
+	fi
+done
+
+for i in $linkdir ; do
+	if [ ! -d ~/$i ] ; then
+		ln -s ~/dotfiles/files/$i ~/$i
+	fi
+done
+
