@@ -4,12 +4,14 @@ linkfiles=".vimrc .gvimrc"
 linkdirs=".vim"
 for i in $linkfiles ; do
 	if [ ! -f ~/$i ] ; then
+		echo "create SimLink:$i"
 		ln -s ~/dotfiles/files/$i ~/$i
 	fi
 done
 
 for i in $linkdirs ; do
 	if [ ! -d ~/$i ] ; then
+		echo "create SimLink:$i"
 		ln -s ~/dotfiles/files/$i ~/$i
 	fi
 done

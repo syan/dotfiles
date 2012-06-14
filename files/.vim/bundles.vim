@@ -38,3 +38,4 @@ NeoBundle 'tpope/vim-fugitive.git'
 NeoBundle 'Lokaltog/vim-powerline.git'
 NeoBundle 'vim-scripts/AnsiEsc.vim.git'
 
+NeoBundle 'chrisbra/SudoEdit.vim.git'
