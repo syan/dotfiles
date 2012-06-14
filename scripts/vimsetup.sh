@@ -8,7 +8,7 @@ for i in $linkfiles ; do
 	fi
 done
 
-for i in $linkdir ; do
+for i in $linkdirs ; do
 	if [ ! -d ~/$i ] ; then
 		ln -s ~/dotfiles/files/$i ~/$i
 	fi
