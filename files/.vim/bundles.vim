@@ -40,6 +40,8 @@ NeoBundle 'vim-scripts/AnsiEsc.vim.git'
 
 NeoBundle 'h1mesuke/vim-alignta.git'
 
+NeoBundle 'chrisbra/SudoEdit.vim.git'
+
 " color scheme
 NeoBundle 'nanotech/jellybeans.vim.git'
 
