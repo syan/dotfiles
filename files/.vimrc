@@ -557,15 +557,15 @@ command! -bar -bang -nargs=? -complete=file GScouter
 " - ;;;gでglobal {{{
 " nnoremap ;;;g     <Esc>:<C-u>g/<C-r><C-w>/
 " }}}
-" 矢印でバッファ移動 {{{
-" ← ：前のバッファ
-nnoremap <silent><Left> :bp<CR>
-" → ：次のバッファ
-nnoremap <silent><Right> :bn<CR>
-" ↑ ：ls
-nnoremap <Up> :ls<CR>:b 
-" → ：tabnew
-nnoremap <Down> :ls<CR>:tabnew #
+" [off]矢印でバッファ移動 {{{
+" " ← ：前のバッファ
+" nnoremap <silent><Left> :bp<CR>
+" " → ：次のバッファ
+" nnoremap <silent><Right> :bn<CR>
+" " ↑ ：ls
+" nnoremap <Up> :ls<CR>:b 
+" " → ：tabnew
+" nnoremap <Down> :ls<CR>:tabnew #
 " }}}
 " horizontal split {{{
 nnoremap sh <C-w>h:call <SID>good_width()<Cr>
