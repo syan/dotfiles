@@ -38,3 +38,8 @@ NeoBundle 'tpope/vim-fugitive.git'
 NeoBundle 'Lokaltog/vim-powerline.git'
 NeoBundle 'vim-scripts/AnsiEsc.vim.git'
 
+NeoBundle 'h1mesuke/vim-alignta.git'
+
+" color scheme
+NeoBundle 'nanotech/jellybeans.vim.git'
+
