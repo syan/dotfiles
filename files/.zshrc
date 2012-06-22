@@ -121,3 +121,7 @@ rehash # optional
 export GISTY_DIR="$HOME/gists"
 export GISTY_ACCESS_TOKEN=f6759132bcc966d3e8b710180ebd3dca0d27b5dc
 
+if [ -f $HOME/.zshrc.local ]; then
+	source $HOME/.zshrc.local
+fi
+
