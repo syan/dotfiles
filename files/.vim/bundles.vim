@@ -20,6 +20,7 @@ NeoBundle 'h1mesuke/unite-outline.git'
 
 NeoBundle 'mattn/webapi-vim.git'
 NeoBundle 'mattn/gist-vim.git'
+NeoBundle 'mattn/zencoding-vim.git'
 
 NeoBundle 'thinca/vim-fontzoom.git'
 NeoBundle 'thinca/vim-quickrun.git'

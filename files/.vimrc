@@ -139,6 +139,9 @@ elseif &term =~ "xterm-color"
   set t_Sb=4%dm
 endif
 " }}}
+" 行記号 {{{
+set listchars=eol:$,tab:▸\ 
+" }}}
 " }}}
 "======= 基本動作 ======= {{{
 " 折り畳み(zf) {{{
@@ -198,6 +201,7 @@ autocmd BufWritePost,FileWritePost {*.vim,*vimrc} if &autoread | source <afile> 
 au BufRead,BufNewFile *.iim			set filetype=imacros
 " }}}
 " }}}
+
 "======== PLUGINS ======== {{{
 " = vimshell.vim {{{
 " Initialize execute file list.
