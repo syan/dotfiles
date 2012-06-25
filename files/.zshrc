@@ -16,6 +16,10 @@ HISTSIZE=100000
 ## 保存する履歴の数
 SAVEHIST=100000
 # }}}
+# = PROMPT {{{
+PROMPT="%m[%h]%#"
+RPROMPT="[%~]"
+# }}}
 ###
 # Set shell options
 ###
