@@ -115,9 +115,6 @@ alias zmv='noglob zmv -W'
 alias ctags='/usr/local/bin/ctags'
 alias so='source'
 
-export PATH=/Applications/MacVim.app/Contents/MacOS:$PATH
-alias vim='/Applications/MacVim.app/Contents/MacOS/Vim'
-
 export PATH=$HOME/git-tasukete:$PATH
 rehash # optional
 
