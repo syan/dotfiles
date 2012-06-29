@@ -113,7 +113,8 @@ alias zmv='noglob zmv -W'
 # }}}
 
 alias ctags='/usr/local/bin/ctags'
-alias so='source'
+# alias so='source'
+# alias sorc='source ~/.zshrc'
 
 export PATH=$HOME/git-tasukete:$PATH
 rehash # optional
@@ -126,3 +127,23 @@ if [ -f $HOME/.zshrc.local ]; then
 	source $HOME/.zshrc.local
 fi
 
+# functions {{{
+# mkcd : mkdir + cd
+function mkcd() {
+	mkdir -p $1 && cd $1
+	pwd
+}
+
+# so : source [source_file]
+# rcファイルの読み込みをする。
+# パラメータを省略した場合は~/.zshrcをロード
+function so() {
+	if [ $# -eq 0 ] ; then
+		echo "source ~/.zshrc"
+		source ~/.zshrc
+	else
+		source $1
+	fi
+}
+
+# }}}
