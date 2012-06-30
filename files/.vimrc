@@ -49,7 +49,8 @@ set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
 set formatexpr=Format_Japanese()
 set formatoptions=tcqmM
 "set guifont=MS_Gothic:h12:cSHIFTJIS
-set guifont=Menlo-Regular:h12
+"set guifont=Menlo-Regular:h12
+set guifont=Yutapon-coding-RegularForPowerline:h12
 set helplang=ja,en
 set history=10000
 set hlsearch
@@ -370,7 +371,7 @@ let Tlist_Use_Horiz_Window = 1
 nnoremap <silent> <F9> :Tlist<CR>
 " }}}
 " PowerLine {{{
-" let g:Powerline_symbols = 'fancy'
+let g:Powerline_symbols = 'fancy'
 " }}}
 " }}}
 " ========== MACROS ========= {{{
