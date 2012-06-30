@@ -37,8 +37,6 @@ compinit
 limit coredumpsize 102400
 ## 出力の文字列末尾に改行コードが無い場合でも表示
 unsetopt promptcr
-## Emacsライクキーバインド設定
-bindkey -e
 
 ## 色を使う
 setopt prompt_subst
