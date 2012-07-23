@@ -370,6 +370,9 @@ let TE_Exclude_File_Pattern = '.*\.o$\|.*\.obj$\|.*\.meta$\|\.DS_Store$\|.*\.bak
 let Tlist_Use_Horiz_Window = 1
 nnoremap <silent> <F9> :Tlist<CR>
 " }}}
+" fugitive {{{
+nnoremap <silent> gs :Gstatus<CR>
+" }}}
 " PowerLine {{{
 let g:Powerline_symbols = 'fancy'
 " }}}

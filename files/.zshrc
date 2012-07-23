@@ -7,6 +7,10 @@ fpath=($HOME/.zsh/functions $fpath)
 # }}}
 # = キーバインド {{{
 bindkey -v
+
+# インサートモードでC-p, C-nで履歴巡り
+bindkey -v '^P' history-beginning-search-backward
+bindkey -v '^N' history-beginning-search-forward
 # }}}
 # = history {{{
 ## 履歴の保存先
@@ -144,4 +148,23 @@ function so() {
 	fi
 }
 
+# }}}
+
+# plugins {{{
+# bookmark : {{{
+# ZSH Directory Bookmarks
+alias m1='alias g1="cd `pwd`"'
+alias m2='alias g2="cd `pwd`"'
+alias m3='alias g3="cd `pwd`"'
+alias m4='alias g4="cd `pwd`"'
+alias m5='alias g5="cd `pwd`"'
+alias m6='alias g6="cd `pwd`"'
+alias m7='alias g7="cd `pwd`"'
+alias m8='alias g8="cd `pwd`"'
+alias m9='alias g9="cd `pwd`"'
+alias mdump='alias | grep -e "g[0-9]=" | grep -v "m[0-9]" | sed "s/^g/alias g/g" > ~/.bookmarks'
+alias lma='alias | grep -e "g[0-9]=" | grep -v "m[0-9]" | sed "s/^g/alias g/g"'
+touch ~/.bookmarks
+source ~/.bookmarks
+# }}}
 # }}}

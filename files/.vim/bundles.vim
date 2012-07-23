@@ -14,6 +14,9 @@ NeoBundle 'basyura/TweetVim.git'
 NeoBundle 'basyura/bitly.vim.git'
 NeoBundle 'basyura/twibill.vim.git'
 
+NeoBundle 'yomi322/neco-tweetvim.git'
+NeoBundle 'yomi322/unite-tweetvim.git'
+
 NeoBundle 'fuenor/qfixhowm.git'
 
 NeoBundle 'h1mesuke/unite-outline.git'
@@ -46,3 +49,5 @@ NeoBundle 'chrisbra/SudoEdit.vim.git'
 " color scheme
 NeoBundle 'nanotech/jellybeans.vim.git'
 
+" vimperator sintax
+NeoBundle 'superbrothers/vim-vimperator'
