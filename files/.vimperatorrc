@@ -1,0 +1,183 @@
+"2.2 (created: 2009/10/28 19:04:27)
+
+"" ブラウザ基本設定 {{{
+let mapleader = "m"
+
+" toolbars
+set toolbars=tabs
+set toolbars=nobookmarks
+set toolbars=nonavigation
+
+
+" @onmouseover or @onmousedown or @onmouseup or @class='lk' or @role='link'"
+" set hinttags="//*[@onclick or @oncommand] | //input[not(@type='hidden')] | //a | //area | //iframe | //textarea | //button | //select | //xhtml:input[not(@type='hidden')] | //xhtml:a | //xhtml:area | //xhtml:iframe | //xhtml:textarea | //xhtml:button | //xhtml:select)"
+" colorscheme {{{
+"silent colorscheme sweets_snaka_persona_opera
+"silent colorscheme sweets_snaka_persona
+"silent colorscheme sweets_snaka
+"silent colorscheme default-syan
+"silent colorscheme sweets_snaka_new
+" }}}
+"" qmark {{{
+"silent qmark e javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title);}})();
+
+"" }}}
+"}}}
+"" エディタ設定 {{{
+"set editor="D:\\\\my\\\\tool\\\\xyzzy\\\\xyzzy.exe"
+"set editor="gvim.exe -c ':set enc=utf-8'"
+"set editor="gvim.exe -c ':set enc=utf-8' -- "
+"set editor="notepad.exe"
+"set editor="gvim.exe"
+" }}}
+"" その他便利設定 {{{
+" キー設定 {{{
+noremap j 5j
+noremap k 5k
+" }}}
+" .vimperatorrcを再読み込み(:restartしなくてもいい) {{{ 
+map <Leader>r :mapc<CR>:cmapc<CR>:imapc<CR>:so ~/.vimperatorrc<CR>
+" }}}
+" 補完リストの選択をC-n,C-pで {{{
+cmap <C-n> <TAB>
+cmap <C-p> <S-TAB>
+cmap <C-f> <Right>
+cmap <C-b> <Left>
+
+imap <C-n> <TAB>
+imap <C-p> <S-TAB>
+imap <C-f> <Right>
+imap <C-b> <Left>
+
+cmap <C-A> <C-a><S-End>
+imap <C-A> <C-a><S-End>
+" }}}
+" 履歴一覧 {{{
+map U :u <TAB>
+" }}}
+" 選択しながらIでalc検索 {{{
+nnoremap I Y:tabopen alc <S-Insert><CR>
+" }}}
+
+map <Up> <Nop>
+map <Down> <Nop>
+
+
+"imeモードの自動変更 {{{
+"オプション
+"auto : No change
+"normal : IME の状態を通常の状態に変更します
+"active : Initially IME on
+"inactive : Initially IME off
+"disabled : Disable IME
+style -name commandline-ime chrome://* #liberator-commandline-command input {ime-mode: inactive;}
+" }}}
+
+" }}}
+
+""" プラグイン設定 {{{
+"" feedSomeKey_3.js  {{{
+command! -nargs=+ lazy autocmd VimperatorEnter .* <args>
+lazy fmaps -u='mail\.google\.com/mail' c / j k n p o u e x s r a # [ ] ? gi gs gt gd ga gc
+lazy fmaps -u='mail\.google\.com/mail/.*/[0-9a-f]+$' c / j,n k,p n,j p,k o u e x s r a # [ ] ? gi gs gt gd ga gc
+lazy fmaps -u='https?://www\.google\.com/reader' -events=vkeypress j k n o p m s v A r S N P X O gh ga gs gt gu u / ? J K
+lazy fmaps -u='(fastladder|livedoor)\.com/reader' j k s a p o v c i,p &lt;Space> &lt;S-Space> z b &lt; > q w e,g
+lazy fmaps -u='https?://www\.rememberthemilk\.com/home/' j k m i c t ? d F,f G,g S,s L,l Y,y H,h M,m &lt;Del> &lt;C-S-Left> &lt;C-S-Right>
+lazy fmaps -u='http://code.google.com/p/vimperator-labs/issues/list' o j k
+lazy fmaps -u='http://code.google.com/p/vimperator-labs/issues/detail' u
+"" }}}
+"" hatena {{{
+"" plugin 読込み
+""javascript if (typeof hBookmark != 'undefined') liberator.loadScript('chrome://hatenabookmark/content/vimperator/plugin/hatenabookmark.js', {__proto__: this});
+"
+"" 補完にhatenaを追加
+""autocmd VimperatorEnter .* :set complete+=H
+"" }}}
+"" migratestatusbar.js {{{
+"javascript <<EOM
+"	liberator.globalVariables.migrate_elements = [
+"		{
+"			// favicon
+"			id: 'page-proxy-stack',
+"			dest: 'liberator-statusline',
+"			after:false,
+"		},
+"		{
+"			// read it lator Add
+"			id: 'RIL_urlbar_add',
+"			dest: 'liberator-statusline',
+"			after: false,
+"		},
+"		{
+"			// read it lator Mark
+"			id: 'RIL_urlbar_mark',
+"			dest: 'liberator-statusline',
+"			after: false,
+"		},
+"        {
+"              // icon that show the existence of RSS and Atom on current page
+"              id:    'feed-button',
+"              dest:  'security-button',
+"              after: true,
+"        },
+"		{
+"			// read it lator toolbar 
+"			id: 'RIL_toolbar_button',
+"			dest: 'security-button',
+"			after: true,
+"		},
+"	];
+"EOM
+"" }}}
+"" copy {{{
+"javascript <<EOM
+"liberator.globalVariables.copy_templates = [
+"  { label: 'titleAndURL',    value: '%TITLE%\r\n%URL%' }
+"];
+"EOM
+"
+"nnoremap silent <C-y> :silent copy<CR>
+""}}}
+"" screen grab {{{
+"" nnoremap <C-F11> :silent javascript sg.Grab(new sg.FrameTarget(), sg.CaptureViewPort, new sg.CopyAction());<CR>
+"javascript <<EOM
+"liberator.modules.mappings.addUserMap([liberator.modules.modes.NORMAL],['<C-F11>'],'Screen grub',
+"function(){
+"sg.Grab(new sg.FrameTarget(), sg.CaptureViewPort, new sg.CopyAction());
+"liberator.echo('Grab!',commandline.FORCE_SINGLELINE);
+"}
+");
+"liberator.modules.mappings.addUserMap([liberator.modules.modes.NORMAL],['<C-S-F11>'],'Screen grub save',
+"function(){
+"sg.Grab(new sg.FrameTarget(), sg.CaptureViewPort, new sg.SaveAction());
+"liberator.echo('Grab save!',commandline.FORCE_SINGLELINE);
+"}
+");
+"EOM
+"
+"
+"" }}}
+""" ril {{{
+"javascript <<EOM
+"liberator.modules.mappings.addUserMap([liberator.modules.modes.NORMAL],['v'],'Read it Lator',
+"function(){
+"var ril = document.getElementById('RIL_urlbar_add');
+"if(!ril) return ;
+"if(ril.getAttribute('hidden')){
+"	RIL.markCurrentAsRead();
+"} else {
+"	RIL.addCurrent();
+"	RIL.addedFromLocationBar();
+"}
+"}
+");
+"EOM
+"
+""" }}}
+""" migemo-find {{{
+""set hintmatching = custom
+""set hintmatching=custom
+"" }}}
+"" }}}
+
+" vim: ft=vimperator foldmethod=marker :

@@ -11,6 +11,7 @@ bindkey -v
 # インサートモードでC-p, C-nで履歴巡り
 bindkey -v '^P' history-beginning-search-backward
 bindkey -v '^N' history-beginning-search-forward
+
 # }}}
 # = history {{{
 ## 履歴の保存先
@@ -23,6 +24,9 @@ SAVEHIST=100000
 # = PROMPT {{{
 PROMPT="%m[%h]%#"
 RPROMPT="[%~]"
+# }}}
+# = EDITOR {{{
+EDITOR=vim
 # }}}
 ###
 # Set shell options
