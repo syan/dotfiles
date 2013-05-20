@@ -122,7 +122,9 @@ alias ctags='/usr/local/bin/ctags'
 # alias so='source'
 # alias sorc='source ~/.zshrc'
 
-export PATH=$HOME/git-tasukete:$PATH
+export PATH=/usr/local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/share/npm/bin:$PATH
+export PATH=$HOME/git-tasukete:/Applications/adt-bundle-mac/sdk/platform-tools:/Applications/adt-bundle-mac/sdk/tools:$PATH
 rehash # optional
 
 # gisty
@@ -172,3 +174,12 @@ touch ~/.bookmarks
 source ~/.bookmarks
 # }}}
 # }}}
+
+# z
+. `brew --prefix`/etc/profile.d/z.sh
+function precmd () {
+   z --add "$(pwd -P)"
+   }
+
+export GL_ENABLE_DEBUG_ATTACH=YES
+

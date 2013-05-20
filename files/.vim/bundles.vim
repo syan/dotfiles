@@ -1,7 +1,8 @@
 
 " NeoBundle 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/neocomplcache.git'
-NeoBundle 'Shougo/neocomplcache-snippets-complete.git'
+"NeoBundle 'Shougo/neocomplcache-snippets-complete.git'
+NeoBundle 'Shougo/neosnippet.git'
 NeoBundle 'Shougo/unite.vim.git'
 NeoBundle 'Shougo/vimfiler.git'
 NeoBundle 'Shougo/vimproc.git'
@@ -98,5 +99,15 @@ NeoBundle 'superbrothers/vim-vimperator'
   " http://yakinikunotare.boo.jp/orebase2/vim/plugin/easy_motion
   NeoBundle 'Lokaltog/vim-easymotion'
 " }}}
+
+  NeoBundle 'airblade/vim-rooter'
+  " NeoBundle 'kana/vim-smartinput'
+
+  "lint
+  NeoBundle 'scrooloose/syntastic.git'
+
+  NeoBundle 'vim-scripts/DirDiff.vim.git'
+
+  NeoBundle 'tpope/vim-surround.git'
 
 " vim: set ts=2 sw=2 expandtab :

@@ -19,6 +19,10 @@ xnoremap , <Nop>
 nnoremap s <Nop>
 xnoremap s <Nop>
 " }}}
+"" キーマップ開放(MacVim) {{{
+"nnoremap <D-P> <Nop>
+"xnoremap <D-P> <Nop>
+"" }}}
 nnoremap ; :
 map! <S-Insert> <MiddleMouse>
 vmap  "*d
@@ -44,8 +48,8 @@ set backupdir=~/.vimtmp/backup-files/
 set backup
 set cmdheight=2
 set directory=~/.vimtmp/vimswp/,/tmp/vimswap,.
-"set fileencodings=guess,ucs-bom,ucs-2le,ucs-2,iso-2022-jp-3,utf-8,euc-jisx0213,euc-jp
-set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
+set fileencodings=guess,ucs-bom,ucs-2le,ucs-2,iso-2022-jp-3,utf-8,euc-jisx0213,euc-jp
+"set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
 set formatexpr=Format_Japanese()
 set formatoptions=tcqmM
 "set guifont=MS_Gothic:h12:cSHIFTJIS
@@ -206,8 +210,9 @@ au BufRead,BufNewFile *.iim			set filetype=imacros
 "======== PLUGINS ======== {{{
 " = vimshell.vim {{{
 " Initialize execute file list.
-nnoremap <silent> sv :tabnew<CR>:tabmove<CR>:VimShellCreate<CR>
-nnoremap <silent> sV :VimShell<CR>
+nnoremap <silent> sv :VimShellBufferDir -popup<CR>
+nnoremap <silent> sV :tabnew<CR>:tabmove<CR>:VimShellCreate<CR>
+"nnoremap <silent> sV :VimShell<CR>
 
 let g:VimShell_UseCkw = 0
 
@@ -216,9 +221,24 @@ if !exists('g:vimshell_interactive_encodings')
 endif
 let g:vimshell_interactive_encodings['ls'] = 'utf8'
 " }}}
-" = VimFiler {{{
-nnoremap <silent> sf :VimFiler<CR>
-nnoremap <silent> sF :VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
+" = VimFiler<CR>
+"nnoremap <silent> sF :VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
+nnoremap <silent> sF :Rooter<CR>:VimFilerExplorer<CR>
+nnoremap <silent> sf :VimFilerBufferDir<CR>
+"
+" A ブックマークに追加
+autocmd FileType vimfiler
+		\ nnoremap <buffer><silent>A :UniteBookmarkAdd<CR>
+
+" b ブックマークを表示
+
+autocmd FileType vimfiler
+		\ nnoremap <buffer><silent>b :Unite bookmark<CR>
+
+" / 下位検索
+autocmd FileType vimfiler 
+        \ nnoremap <buffer><silent>/ 
+        \ :<C-u>UniteWithBufferDir file -default-action=vimfiler<CR>
 
 " }}}
 " = neocomplcache.vim {{{
@@ -234,6 +254,8 @@ let g:neocomplcache_enable_at_startup = 1
 let g:neocomplcache_ctags_program = '/usr/local/ctags'
 " }}}
 " 表示 {{{
+" - デフォルト
+let g:vimfiler_as_default_explorer = 1
 " - ポップアップする候補の最大数(100)
 let g:neocomplcache_max_list = 100
 " - メニューの幅(50)
@@ -281,8 +303,7 @@ let g:NeoComplCache_OmniPatterns['sql'] = '\v\h\w*'
 " imap <expr><silent><C-e> pumvisible() ? "\<C-e>" : "\<Plug>(neocomplcache_keyword_caching)"
  
 " Plugin key-mappings.
-imap <C-l>     <Plug>(neocomplcache_snippets_expand)
-smap <C-l>     <Plug>(neocomplcache_snippets_expand)
+
 inoremap <expr><C-h> pumvisible() ? "\<C-y>\<C-h>" : "\<C-h>"
 inoremap <expr><C-g>     neocomplcache#undo_completion()
 
@@ -292,6 +313,26 @@ autocmd FileType *
 \ | endif
 
 " }}}
+" NeoSnippets {{{
+let g:neosnippet#snippets_directory = '~/.vim/snippets'
+" imap <C-l>     <Plug>(neocomplcache_snippets_expand)
+" smap <C-l>     <Plug>(neocomplcache_snippets_expand)
+
+" Plugin key-mappings.
+imap <C-l>     <Plug>(neosnippet_expand_or_jump)
+smap <C-l>     <Plug>(neosnippet_expand_or_jump)
+
+" SuperTab like snippets behavior.
+imap <expr><TAB> neosnippet#expandable() ? "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For snippet_complete marker.
+if has('conceal')
+  set conceallevel=2 concealcursor=i
+endif
+
+" }}}
+ 
 " Unite {{{
 " smartcase ON
 let g:unite_enable_ignore_case=1
@@ -316,6 +357,16 @@ nnoremap <silent> ss :UniteResume<CR>
 "nnoremap <silent> sf :Unite file_rec<CR>
 nnoremap <silent> sm :Unite mapping<CR>
 
+nnoremap <silent> <C-l> :Unite line<CR>
+nnoremap <silent> <C-L> :UniteWithCursorWord line<CR>
+
+nnoremap <silent> sp :<C-u>call <SID>unite_project('-start-insert')<CR>
+function! s:unite_project(...)
+  let opts = (a:0 ? join(a:000, ' ') : '')
+  let dir = unite#util#path2project_directory(expand('%'))
+  execute 'Unite' opts 'file_rec:' . dir
+endfunction
+call unite#custom_source('file_rec', 'ignore_pattern', '\.\(meta\|png\|dll\|csproj\|unityproj\|asset\)$\|Library/')
 call unite#custom_default_action('source/bookmark/directory' , 'vimfiler')
 
 " - Unite grep {{{
@@ -347,14 +398,14 @@ let g:quickrun_config["*"] = {'runmode': "async:vimproc", 'split' : "rightbelow"
 "ommnifunc
 let g:use_zen_complete_tag = 1
 " }}}
-" quickhl {{{
-nmap <Space>m <Plug>(quickhl-toggle)
-xmap <Space>m <Plug>(quickhl-toggle)
-nmap <Space>M <Plug>(quickhl-reset)
-xmap <Space>M <Plug>(quickhl-reset)
-nmap <Space>j <Plug>(quickhl-match)
-nmap <Space>/ :QuickhlAdd
-nmap <Space>? :QuickhlDel
+" - quickhl {{{
+" nmap <Space>m <Plug>(quickhl-toggle)
+" xmap <Space>m <Plug>(quickhl-toggle)
+" nmap <Space>M <Plug>(quickhl-reset)
+" xmap <Space>M <Plug>(quickhl-reset)
+" nmap <Space>j <Plug>(quickhl-match)
+" nmap <Space>/ :QuickhlAdd
+" nmap <Space>? :QuickhlDel
 " }}}
 " QFixMemo {{{
 let g:QFixHowm_Convert = 0
@@ -387,8 +438,19 @@ let g:indent_guides_enable_on_vim_startup = 1
  
 " }}}
 " EasyMotion {{{
-let g:EasyMotion_leader_key = '<Space><Space>'
-let g:EasyMotion_keys = 'fjdkslaureiwoqpvncm'
+" let g:EasyMotion_leader_key = '<Space><Space>'
+" let g:EasyMotion_keys = 'fjdkslaureiwoqpvncm'
+"set relativenumber
+" }}}
+" vim-rooter {{{
+" \cd でカレントディレクトリを移動（デフォルト）
+map <silent> <unique> <Leader>cd <Plug>RooterChangeToRootDirectory
+" 一旦全部削除
+" autocmd! Rooter
+" 標準では以下の拡張子で自動的に起動
+autocmd BufEnter *.rb,*.html,*.haml,*.erb,*.rjs,*.css,*.js,*.cs :Rooter
+" cd の代わりに lcd を使う
+let g:rooter_use_lcd = 1
 " }}}
 " }}}
 " ========== MACROS ========= {{{
@@ -428,55 +490,57 @@ endfunction
 " endfunction
 " }}}
 " - 文字コードの自動認識 {{{
-if &encoding !=# 'utf-8'
-  set encoding=japan
-  set fileencoding=japan
-endif
-if has('iconv')
-  let s:enc_euc = 'euc-jp'
-  let s:enc_jis = 'iso-2022-jp'
-  " iconvがeucJP-msに対応しているかをチェック
-  if iconv("\x87\x64\x87\x6a", 'cp932', 'eucjp-ms') ==# "\xad\xc5\xad\xcb"
-    let s:enc_euc = 'eucjp-ms'
-    let s:enc_jis = 'iso-2022-jp-3'
-  " iconvがJISX0213に対応しているかをチェック
-  elseif iconv("\x87\x64\x87\x6a", 'cp932', 'euc-jisx0213') ==# "\xad\xc5\xad\xcb"
-    let s:enc_euc = 'euc-jisx0213'
-    let s:enc_jis = 'iso-2022-jp-3'
-  endif
-  " fileencodingsを構築
-  if &encoding ==# 'utf-8'
-    let s:fileencodings_default = &fileencodings
-    let &fileencodings = s:enc_jis .','. s:enc_euc .',cp932'
-    let &fileencodings = &fileencodings .','. s:fileencodings_default
-    unlet s:fileencodings_default
-  else
-    let &fileencodings = &fileencodings .','. s:enc_jis
-    set fileencodings+=utf-8,ucs-2le,ucs-2
-    if &encoding =~# '^\(euc-jp\|euc-jisx0213\|eucjp-ms\)$'
-      set fileencodings+=cp932
-      set fileencodings-=euc-jp
-      set fileencodings-=euc-jisx0213
-      set fileencodings-=eucjp-ms
-      let &encoding = s:enc_euc
-      let &fileencoding = s:enc_euc
-    else
-      let &fileencodings = &fileencodings .','. s:enc_euc
-    endif
-  endif
-  " 定数を処分
-  unlet s:enc_euc
-  unlet s:enc_jis
-endif
-" 日本語を含まない場合は fileencoding に encoding を使うようにする
-if has('autocmd')
-  function! AU_ReCheck_FENC()
-    if &fileencoding =~# 'iso-2022-jp' && search("[^\x01-\x7e]", 'n') == 0
-      let &fileencoding=&encoding
-    endif
-  endfunction
-  autocmd BufReadPost * call AU_ReCheck_FENC()
-endif
+"if &encoding !=# 'utf-8'
+"  set encoding=japan
+"  set fileencoding=japan
+"endif
+"echomsg "start check"
+"if has('iconv')
+"  echomsg "has iconv"
+"  let s:enc_euc = 'euc-jp'
+"  let s:enc_jis = 'iso-2022-jp'
+"  " iconvがeucJP-msに対応しているかをチェック
+"  if iconv("\x87\x64\x87\x6a", 'cp932', 'eucjp-ms') ==# "\xad\xc5\xad\xcb"
+"    let s:enc_euc = 'eucjp-ms'
+"    let s:enc_jis = 'iso-2022-jp-3'
+"  " iconvがJISX0213に対応しているかをチェック
+"  elseif iconv("\x87\x64\x87\x6a", 'cp932', 'euc-jisx0213') ==# "\xad\xc5\xad\xcb"
+"    let s:enc_euc = 'euc-jisx0213'
+"    let s:enc_jis = 'iso-2022-jp-3'
+"  endif
+"  " fileencodingsを構築
+"  if &encoding ==# 'utf-8'
+"    let s:fileencodings_default = &fileencodings
+"    let &fileencodings = s:enc_jis .','. s:enc_euc .',cp932'
+"    let &fileencodings = &fileencodings .','. s:fileencodings_default
+"    unlet s:fileencodings_default
+"  else
+"    let &fileencodings = &fileencodings .','. s:enc_jis
+"    set fileencodings+=ucs-2,utf-8,ucs-2le
+"    if &encoding =~# '^\(euc-jp\|euc-jisx0213\|eucjp-ms\)$'
+"      set fileencodings+=cp932
+"      set fileencodings-=euc-jp
+"      set fileencodings-=euc-jisx0213
+"      set fileencodings-=eucjp-ms
+"      let &encoding = s:enc_euc
+"      let &fileencoding = s:enc_euc
+"    else
+"      let &fileencodings = &fileencodings .','. s:enc_euc
+"    endif
+"  endif
+"  " 定数を処分
+"  unlet s:enc_euc
+"  unlet s:enc_jis
+"endif
+"" 日本語を含まない場合は fileencoding に encoding を使うようにする
+"if has('autocmd')
+"  function! AU_ReCheck_FENC()
+"    if &fileencoding =~# 'iso-2022-jp' && search("[^\x01-\x7e]", 'n') == 0
+"      let &fileencoding=&encoding
+"    endif
+"  endfunction
+"  autocmd BufReadPost * call AU_ReCheck_FENC()
+"endif
 " 改行コードの自動認識
 set fileformats=unix,dos,mac
 " □とか○の文字があってもカーソル位置がずれないようにする
@@ -536,7 +600,7 @@ function! s:move_window_into_tab_page(target_tabpagenr)
   execute target_tabpagenr 'tabnext'
 endfunction " }}}
 " <space>ao move current buffer into a new tab. {{{
-nnoremap <silent> <Space>ao :<C-u>call <SID>move_window_into_tab_page(0)<Cr>
+" nnoremap <silent> <Space>ao :<C-u>call <SID>move_window_into_tab_page(0)<Cr>
 " }}}
 " tab move keys {{{
 "- [tN]tab new 
@@ -631,7 +695,23 @@ nmap <silent> <Leader>/ :nohlsearch<CR>
 " sudo after w!! {{{
 cmap w!! !sudo tee % > /dev/null
 " }}}
+" .vimrc.local http://vim-users.jp/2009/12/hack112/ {{{
+" Load settings for each location.
+augroup vimrc-local
+  autocmd!
+  autocmd BufNewFile,BufReadPost * call s:vimrc_local(expand('<afile>:p:h'))
+augroup END
+
+function! s:vimrc_local(loc)
+  let files = findfile('.vimrc.local', escape(a:loc, ' ') . ';', -1)
+  for i in reverse(filter(files, 'filereadable(v:val)'))
+    source `=i`
+  endfor
+endfunction
 " }}}
+" }}}
+
+nnoremap <silent> sU :e! ++enc=ucs-2<CR>
 
 " unite-line {{{
 let s:unite_source = {
