@@ -3,11 +3,13 @@
 NeoBundle 'Shougo/neocomplcache.git'
 "NeoBundle 'Shougo/neocomplcache-snippets-complete.git'
 NeoBundle 'Shougo/neosnippet.git'
+NeoBundle 'Shougo/neosnippet-snippets.git'
 NeoBundle 'Shougo/unite.vim.git'
 NeoBundle 'Shougo/vimfiler.git'
 NeoBundle 'Shougo/vimproc.git'
 NeoBundle 'Shougo/vimshell.git'
 NeoBundle 'Shougo/vinarise.git'
+NeoBundle 'Shougo/neomru.vim.git'
 
 NeoBundle 'Sixeight/unite-grep.git'
 
@@ -20,11 +22,12 @@ NeoBundle 'yomi322/unite-tweetvim.git'
 
 NeoBundle 'fuenor/qfixhowm.git'
 
-NeoBundle 'h1mesuke/unite-outline.git'
+" NeoBundle 'h1mesuke/unite-outline.git'
+NeoBundle 'Shougo/unite-outline.git'
 
 NeoBundle 'mattn/webapi-vim.git'
 NeoBundle 'mattn/gist-vim.git'
-NeoBundle 'mattn/zencoding-vim.git'
+NeoBundle 'mattn/emmet-vim.git'
 
 NeoBundle 'thinca/vim-fontzoom.git'
 NeoBundle 'thinca/vim-quickrun.git'
@@ -109,5 +112,20 @@ NeoBundle 'superbrothers/vim-vimperator'
   NeoBundle 'vim-scripts/DirDiff.vim.git'
 
   NeoBundle 'tpope/vim-surround.git'
+
+  NeoBundle 'ujihisa/vimshell-ssh.git'
+
+  NeoBundle 'yuratomo/w3m.vim.git'
+
+  NeoBundle 'rking/ag.vim'
+
+  NeoBundle 'kakkyz81/evervim'
+  NeoBundle 'rcmdnk/vim-markdown'
+
+
+" git {{{
+  NeoBundle 'rhysd/committia.vim'
+  NeoBundle 'AndrewRadev/gapply.vim'
+" }}}
 
 " vim: set ts=2 sw=2 expandtab :

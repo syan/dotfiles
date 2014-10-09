@@ -3,7 +3,14 @@
 export LANG=ja_JP.UTF-8
 # }}}
 # = path {{{
-fpath=($HOME/.zsh/functions $fpath)
+fpath=($HOME/.zsh/functions $HOME/.zsh/completion $HOME/.zsh/percol-sources $fpath)
+
+# percol-sources
+for f in $HOME/.zsh/percol-sources/*; do
+	echo "percol:${f}"
+	source "${f}"
+done;
+
 # }}}
 # = キーバインド {{{
 bindkey -v
@@ -11,6 +18,10 @@ bindkey -v
 # インサートモードでC-p, C-nで履歴巡り
 bindkey -v '^P' history-beginning-search-backward
 bindkey -v '^N' history-beginning-search-forward
+
+bindkey -v '^rh' percol-select-history
+
+bindkey -v '^rc' percol-cdr
 
 # }}}
 # = history {{{
@@ -32,10 +43,11 @@ EDITOR=vim
 # Set shell options
 ###
 # setopt auto_menu auto_cd correct auto_name_dirs auto_remove_slash
-# setopt extended_history hist_ignore_dups hist_ignore_space prompt_subst
-# setopt pushd_ignore_dups rm_star_silent sun_keyboard_hack
-# setopt extended_glob list_types no_beep always_last_prompt
-# setopt cdable_vars sh_word_split auto_param_keys
+setopt extended_history hist_ignore_dups hist_ignore_space prompt_subst
+setopt pushd_ignore_dups
+setopt extended_glob list_types no_beep always_last_prompt
+setopt cdable_vars sh_word_split auto_param_keys
+# setopt rm_star_silent sun_keyboard_hack
 
 ## 補完機能の強化
 autoload -U compinit
@@ -122,10 +134,28 @@ alias ctags='/usr/local/bin/ctags'
 # alias so='source'
 # alias sorc='source ~/.zshrc'
 
+## パスの重複を省く
+# typeset -U path cdpath fpath manpath
+#typeset -U path
+#
+## sudo用パス
+#typeset -xT SUDO_PATH sudo_path
+#typeset -U sudo_path
+#sudo_path=(~/bin(N-/) /usr/local/bin(N-/) ${path})
+
+path=(~/bin(N-/) ~/bin-scripts(N-/) /usr/local/bin(N-/) ${path})
 export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/bin:/usr/local/share/npm/bin:$PATH
 export PATH=$HOME/git-tasukete:/Applications/adt-bundle-mac/sdk/platform-tools:/Applications/adt-bundle-mac/sdk/tools:$PATH
 rehash # optional
+
+# editor
+export EDITOR=vim
+
+# edit in vim
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
 
 # gisty
 export GISTY_DIR="$HOME/gists"
@@ -154,6 +184,35 @@ function so() {
 	fi
 }
 
+# peco plugins
+
+if [ -x $(which peco) ]; then
+	function lscd() {
+		local target
+		
+		target=$( ls | peco )
+		if [ -n "${target}" ] ; then
+			cd "${target}"
+		fi
+		# zle reset-prompt
+	}
+
+	zle -N lscd
+	echo "load lscd"
+
+	function peco_ghq_cd() {
+	local selected_dir=$(ghq list --full-path | peco --query "$LBUFFER")
+		if [ -n "$selected_dir" ]; then
+			BUFFER="cd ${selected_dir}"
+			zle accept-line
+		fi
+		zle clear-screen
+	}
+	zle -N peco_ghq_cd
+	bindkey '^]' peco_ghq_cd
+	
+fi
+
 # }}}
 
 # plugins {{{
@@ -175,11 +234,53 @@ source ~/.bookmarks
 # }}}
 # }}}
 
-# z
-. `brew --prefix`/etc/profile.d/z.sh
-function precmd () {
-   z --add "$(pwd -P)"
-   }
+# direnv {{{
+if [ -x $(which direnv) ]; then
+	eval "$(direnv hook $0)"
+fi
+# }}}
+
+# z.sh {{{
+if which brew > /dev/null; then
+	_Z_CMD=j
+	. `brew --prefix`/etc/profile.d/z.sh
+fi
+# }}}
+
+# percol_select_directory {{{
+function percol_select_directory() {
+	local percol
+	local tac
+
+	percol="percol"
+	if which tac > /dev/null; then
+		tac="tac"
+	else
+		tac="tail -r"
+	fi
+	local dest=$(_z -r 2>&1 | eval $tac | ${percol} --query "$LBUFFER" | awk '{ print $2 }')
+	if [ -n "${dest}" ]; then
+		cd ${dest}
+	fi
+	zle reset-prompt
+}
+zle -N percol_select_directory
+alias jj=percol_select_directory
+#bindkey "^X^J" percol_select_directory
+# }}}
+#
+#
+
+# gitignore {{{
+function gi() {
+	curl "http://www.gitignore.io/api/$@"
+}
+zle -N gi
+
+# }}}
 
 export GL_ENABLE_DEBUG_ATTACH=YES
 
+# {{{
+alias zp="tmux capture-pane -S -10000\; show-buffer | vim +10000 -Rc 'set ft=vimshell ts=8 nolist nonu' -"
+# }}}

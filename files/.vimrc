@@ -48,7 +48,7 @@ set backupdir=~/.vimtmp/backup-files/
 set backup
 set cmdheight=2
 set directory=~/.vimtmp/vimswp/,/tmp/vimswap,.
-set fileencodings=guess,ucs-bom,ucs-2le,ucs-2,iso-2022-jp-3,utf-8,euc-jisx0213,euc-jp
+set fileencodings=guess,utf8,iso-2022-jp-3,utf-8,euc-jisx0213,euc-jp,ucs-bom,ucs-2le,ucs-2
 "set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
 set formatexpr=Format_Japanese()
 set formatoptions=tcqmM
@@ -205,6 +205,21 @@ autocmd BufWritePost,FileWritePost {*.vim,*vimrc} if &autoread | source <afile> 
 " imacros {{{
 au BufRead,BufNewFile *.iim			set filetype=imacros
 " }}}
+
+" golang {{{
+set rtp+=$GOROOT/misc/vim
+set rtp+=$GOPATH/src/github.com/nsf/gocode/vim
+if !exists('g:neocomplcache_omni_patterns')
+    let g:neocomplcache_omni_patterns = {}
+endif
+let g:neocomplcache_omni_patterns.go = '\h\w*\.\?'
+" }}}
+" markdown {{{
+autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
+" Disable highlight italic in Markdown
+autocmd FileType markdown hi! def link markdownItalic LineNr
+
+" }}}
 " }}}
 
 "======== PLUGINS ======== {{{
@@ -237,7 +252,7 @@ autocmd FileType vimfiler
 
 " / 下位検索
 autocmd FileType vimfiler 
-        \ nnoremap <buffer><silent>/ 
+        \ nnoremap <buffer><silent>? 
         \ :<C-u>UniteWithBufferDir file -default-action=vimfiler<CR>
 
 " }}}
@@ -251,7 +266,7 @@ let g:AutoComplPop_NotEnableAtStartup = 1
 let g:neocomplcache_enable_at_startup = 1
 " ctagsの場所
 " let g:neocomplcache_ctags_program = 'ctags'
-let g:neocomplcache_ctags_program = '/usr/local/ctags'
+let g:neocomplcache_ctags_program = '/usr/local/bin/ctags'
 " }}}
 " 表示 {{{
 " - デフォルト
@@ -337,6 +352,8 @@ endif
 " smartcase ON
 let g:unite_enable_ignore_case=1
 let g:unite_enable_start_insert=1
+let g:unite_enable_smart_case = 1
+
 nnoremap <silent> <F2> :Unite file_mru<CR>
 nnoremap <silent> <F3> :Unite buffer<CR>
 nnoremap <silent> <F4> :Unite bookmark<CR>
@@ -347,11 +364,6 @@ nnoremap <silent> se :UniteWithBufferDir file<CR>
 nnoremap <silent> sE :UniteWithCurrent file<CR>
 nnoremap <silent> sr :Unite file_mru<CR>
 nnoremap <silent> si :UniteWithInput buffer bookmark file file_mru<CR>
-"nnoremap <silent> sg :Unite grep:%<CR>
-nnoremap <silent> sg :Unite grep:$buffers<CR>
-vnoremap <silent> sg "vy:Unite grep:$buffers:-iHn:<C-r>=substitute(escape(@v,'\/'),"\n",'\\n','g')<CR><CR>
-nnoremap <silent> sG :Unite grep<CR>
-vnoremap <silent> sG "vy:Unite grep:::<C-r>=substitute(escape(@v,'\/'),"\n",'\\n','g')<CR><CR>
 nnoremap <silent> sH :Unite help<CR>
 nnoremap <silent> ss :UniteResume<CR>
 "nnoremap <silent> sf :Unite file_rec<CR>
@@ -369,11 +381,43 @@ endfunction
 call unite#custom_source('file_rec', 'ignore_pattern', '\.\(meta\|png\|dll\|csproj\|unityproj\|asset\)$\|Library/')
 call unite#custom_default_action('source/bookmark/directory' , 'vimfiler')
 
+" - Unite jump {{{
+nnoremap <silent> ,j :Unite jump<CR>
+" }}}
 " - Unite grep {{{
+"nnoremap <silent> sg :Unite grep:%<CR>
+nnoremap <silent> sg :Unite grep:$buffers<CR>
+vnoremap <silent> sg "vy:Unite grep:$buffers:-iHn:<C-r>=substitute(escape(@v,'\/'),"\n",'\\n','g')<CR><CR>
+nnoremap <silent> sG :Unite grep<CR>
+vnoremap <silent> sG "vy:Unite grep:::<C-r>=substitute(escape(@v,'\/'),"\n",'\\n','g')<CR><CR>
+
+let g:unite_data_directory="~/.cache/unite/"
+
 " windowsのパスがつかえない
 let g:unite_source_grep_command='grep'
 let g:unite_source_grep_recursive_opt='-R'
 let g:unite_source_grep_default_opts='-iRHn'
+
+" grep検索
+nnoremap <silent> ,g  :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
+
+" カーソル位置の単語をgrep検索
+nnoremap <silent> ,cg :<C-u>Unite grep:.::<C-R><C-W> -buffer-name=search-buffer<CR><CR>
+
+vnoremap /g y:Unite grep::-iHRn:<C-R>=escape(@", '\\.*$^[]')<CR><CR>
+
+vnoremap <silent> gg "vy:Unite grep:.::<C-r>=substitute(escape(@v,'\/'),"\n",'\\n','g')<CR><CR>
+
+" grep検索結果の再呼出
+nnoremap <silent> ,r  :<C-u>UniteResume search-buffer<CR>
+
+" unite grep に ag(The Silver Searcher) を使う
+if executable('ag')
+  let g:unite_source_grep_command = 'ag'
+  let g:unite_source_grep_default_opts = '--nogroup --nocolor'
+  let g:unite_source_grep_recursive_opt = ''
+  let g:unite_source_grep_max_candidates = 200
+endif
 
 " }}}
 " - Unite outline {{{
@@ -384,13 +428,19 @@ let g:unite_source_outline_verbose = 1
 " }}}
 " QuickRun {{{
 
-if !exists('g:quickrun_config')
-	let g:quickrun_config = {}
-	let g:quickrun_config['*'] = {}
-"let g:quickrun_config.javascript = {'command' : 'CScript.exe'}
-endif
-let g:quickrun_config["*"] = {'runmode': "async:vimproc", 'split' : "rightbelow"}
-
+let g:quickrun_config = {
+			\	"_" : {
+			\       "hook/close_buffer/enable_empty_data" : 1,
+			\		"runner" : "vimproc",
+			\		"runner/vimproc/updatetime" : 40,
+			\	}
+			\}
+let g:quickrun_config['sqlite'] = { 
+			\ 'command' : 'sqlite3',
+			\ 'exec' : '%c %o',
+			\ 'cmdopt' : '-batch /Users/syan/Desktop/guide.sqlite'
+			\ }
+"let g:quickrun_config["_"] = {'runmode': "async:vimproc", 'split' : "rightbelow"}
 " let g:QuickRunConfig.javascript = {'command' : 'CScript.exe'}
 
 " }}}
@@ -408,9 +458,11 @@ let g:use_zen_complete_tag = 1
 " nmap <Space>? :QuickhlDel
 " }}}
 " QFixMemo {{{
-let g:QFixHowm_Convert = 0
-let g:qfixmemo_dir = '~/qfixmemo'
-let g:qfixmemo_ext = 'mkd'
+" let g:QFixHowm_Convert = 0
+let howm_dir = '~/qfixmemo'
+let QFixHowm_FileType = 'markdown'
+let QFixHowm_Title = '#'
+
 " }}}
 " TagExplorer {{{
 nnoremap <silent> <F8> :TagExplorer<CR>
@@ -451,6 +503,17 @@ map <silent> <unique> <Leader>cd <Plug>RooterChangeToRootDirectory
 autocmd BufEnter *.rb,*.html,*.haml,*.erb,*.rjs,*.css,*.js,*.cs :Rooter
 " cd の代わりに lcd を使う
 let g:rooter_use_lcd = 1
+" }}}
+" Evervim {{{
+nnoremap <silent> ,el :<C-u>EvervimNotebookList<CR>
+nnoremap <silent> ,eT :<C-u>EvervimListTags<CR>
+nnoremap <silent> ,en :<C-u>EvervimCreateNote<CR>
+nnoremap <silent> ,eb :<C-u>EvervimOpenBrowser<CR>
+nnoremap <silent> ,ec :<C-u>EvervimOpenClient<CR>
+nnoremap ,es :<C-u>EvervimSearchByQuery<SPACE>
+nnoremap <silent> ,et :<C-u>EvervimSearchByQuery<SPACE>tag:todo -tag:done -tag:someday<CR>
+nnoremap <silent> ,eta :<C-u>EvervimSearchByQuery<SPACE>tag:todo -tag:done<CR>
+let g:evervim_splitoption=''
 " }}}
 " }}}
 " ========== MACROS ========= {{{
@@ -709,6 +772,12 @@ function! s:vimrc_local(loc)
   endfor
 endfunction
 " }}}
+" todaynote {{{
+function! s:todaynote()
+	call ':e ' . '~/Dropbox/note/' . strftime('%Y%m%d') . '.md'
+endfunction
+
+" }}}
 " }}}
 
 nnoremap <silent> sU :e! ++enc=ucs-2<CR>
@@ -733,5 +802,11 @@ endfunction
 call unite#define_source(s:unite_source)
 unlet s:unite_source
 
+" }}}
+
+" ローカル用.vimを読み込む {{{
+if filereadable(expand('~/.vimrc.local'))
+  source ~/.vimrc.local
+endif
 " }}}
 " vim: set ft=vim foldmethod=marker :
